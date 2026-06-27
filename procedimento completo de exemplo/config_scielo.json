@@ -1,0 +1,24 @@
+{
+  "search": {
+    "query": "(\"inferência causal\" OR \"causal inference\") AND (\"descoberta causal\" OR \"causal discovery\")",
+    "start_year": 2020,
+    "end_year": 2026
+  },
+  "api": {
+    "base_url": "https://api.openalex.org/works",
+    "publisher_id": "P4310312277",
+    "limit": 50,
+    "max_retries": 5,
+    "backoff_factor": 1.5,
+    "politeness_delay_seconds": 1.0,
+    "user_agent": "SciELOHarvester/1.0 (contact: eduardo@exemplo.com)"
+  },
+  "paths": {
+    "output_dir": "scielo_outputs",
+    "csv_name": "scielo_clean_data.csv",
+    "json_name": "scielo_raw_backup.json",
+    "excel_name": "SciELO_Data_Export.xlsx",
+    "report_name": "scielo_summary_report.md",
+    "log_name": "scielo_harvester.log"
+  }
+}

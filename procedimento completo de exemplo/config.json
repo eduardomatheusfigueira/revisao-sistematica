@@ -1,0 +1,23 @@
+{
+  "search": {
+    "query": "(\"inferência causal\" OR \"causal inference\") AND (\"descoberta causal\" OR \"causal discovery\")",
+    "start_year": 2020,
+    "end_year": 2026
+  },
+  "api": {
+    "base_url": "https://bdtd.ibict.br/vufind/api/v1/search",
+    "limit": 50,
+    "max_retries": 5,
+    "backoff_factor": 1.5,
+    "politeness_delay_seconds": 1.5,
+    "user_agent": "BDTDHarvester/1.0 (contact: eduardo@exemplo.com)"
+  },
+  "paths": {
+    "output_dir": "data_outputs",
+    "csv_name": "bdtd_clean_data.csv",
+    "json_name": "bdtd_raw_backup.json",
+    "excel_name": "BDTD_Data_Export.xlsx",
+    "report_name": "bdtd_summary_report.md",
+    "log_name": "bdtd_harvester.log"
+  }
+}

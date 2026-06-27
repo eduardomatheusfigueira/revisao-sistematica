@@ -1,0 +1,36 @@
+@echo off
+chcp 65001 > nul
+title SciELO Harvester - Inicializador Rápido
+echo =================================================================
+echo             INICIALIZADOR DO SCIELO HARVESTER
+echo =================================================================
+echo.
+echo Verificando se o Python está disponível...
+where python >nul 2>nul
+if %errorlevel% neq 0 (
+    echo [ERRO] Python não encontrado no PATH do sistema.
+    echo Por favor, instale o Python e adicione-o ao seu PATH.
+    pause
+    exit /b 1
+)
+
+echo [OK] Python detectado.
+echo.
+echo DICA: O OpenAlex indexa melhor buscas sem acentos.
+echo Exemplo: "inferencia causal" (retorna mais resultados em espanhol/portugues)
+echo.
+set /p search_query="Digite o termo de busca para a SciELO (pressione ENTER para usar a busca padrão do config_scielo.json): "
+
+if "%search_query%"=="" (
+    echo Executando harvester com a configuração padrão do config_scielo.json...
+    python scielo_harvester.py
+) else (
+    echo Executando harvester com a busca: "%search_query%"
+    python scielo_harvester.py --query "%search_query%"
+)
+
+echo.
+echo =================================================================
+echo Processo concluído! Os resultados estarão na pasta configurada.
+echo =================================================================
+pause

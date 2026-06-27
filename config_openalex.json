@@ -1,0 +1,29 @@
+{
+  "search": {
+    "query": "\"inferência causal\"",
+    "start_year": 2000,
+    "end_year": 2026,
+    "filters": {
+      "repository_ids": [],
+      "publisher_ids": [],
+      "only_open_access": false,
+      "source_types": []
+    }
+  },
+  "api": {
+    "base_url": "https://api.openalex.org/works",
+    "limit": 50,
+    "max_retries": 5,
+    "backoff_factor": 1.5,
+    "politeness_delay_seconds": 1.0,
+    "user_agent": "OpenAlexHarvester/1.0 (contact: user@mail.com)"
+  },
+  "paths": {
+    "output_dir": "openalex_outputs",
+    "csv_name": "openalex_clean_data.csv",
+    "json_name": "openalex_raw_backup.json",
+    "excel_name": "OpenAlex_Data_Export.xlsx",
+    "report_name": "openalex_summary_report.md",
+    "log_name": "openalex_harvester.log"
+  }
+}

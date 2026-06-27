@@ -1,0 +1,24 @@
+{
+  "search": {
+    "query": "TITLE-ABS-KEY(\"inferência causal\")",
+    "start_year": 2000,
+    "end_year": 2026
+  },
+  "api": {
+    "base_url": "https://api.elsevier.com/content/search/scopus",
+    "api_key": "33698870c47d2706e3a3fc4c03397832",
+    "limit": 25,
+    "max_retries": 5,
+    "backoff_factor": 1.5,
+    "politeness_delay_seconds": 1.0,
+    "user_agent": "ScopusHarvester/1.0 (contact: user@mail.com)"
+  },
+  "paths": {
+    "output_dir": "scopus_outputs",
+    "csv_name": "scopus_clean_data.csv",
+    "json_name": "scopus_raw_backup.json",
+    "excel_name": "Scopus_Data_Export.xlsx",
+    "report_name": "scopus_summary_report.md",
+    "log_name": "scopus_harvester.log"
+  }
+}

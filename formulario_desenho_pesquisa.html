@@ -1,0 +1,2198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desenho de Pesquisa — Revisão Sistemática da Literatura</title>
+    <meta name="description" content="Formulário autoguiado para configuração de revisão sistemática da literatura com geração de arquivos de configuração e planilhas de gestão PRISMA.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           DESIGN SYSTEM — CSS Custom Properties
+           ═══════════════════════════════════════════════════════════ */
+        :root {
+            /* Colors */
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a2035;
+            --bg-card-hover: #1e2744;
+            --bg-input: #0d1321;
+            --bg-overlay: rgba(10, 14, 26, 0.85);
+            --bg-glass: rgba(26, 32, 53, 0.65);
+            --border-subtle: rgba(99, 128, 255, 0.12);
+            --border-active: rgba(99, 128, 255, 0.4);
+            --border-glow: rgba(99, 128, 255, 0.6);
+            --text-primary: #e8ecf4;
+            --text-secondary: #9ca3b8;
+            --text-muted: #6b7280;
+            --text-accent: #818cf8;
+            --accent-1: #6366f1;
+            --accent-2: #818cf8;
+            --accent-3: #a5b4fc;
+            --accent-gradient: linear-gradient(135deg, #6366f1, #818cf8, #a78bfa);
+            --success: #34d399;
+            --success-bg: rgba(52, 211, 153, 0.1);
+            --warning: #fbbf24;
+            --warning-bg: rgba(251, 191, 36, 0.1);
+            --error: #f87171;
+            --error-bg: rgba(248, 113, 113, 0.1);
+            --info: #60a5fa;
+            --info-bg: rgba(96, 165, 250, 0.1);
+            /* PRISMA colors */
+            --prisma-identification: #6366f1;
+            --prisma-screening: #f59e0b;
+            --prisma-eligibility: #10b981;
+            --prisma-included: #06b6d4;
+            /* Shadows */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+            --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.15);
+            /* Radii */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            /* Transitions */
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           RESET & BASE
+           ═══════════════════════════════════════════════════════════ */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse 80% 60% at 50% 0%, rgba(99,102,241,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 80% 100%, rgba(167,139,250,0.06) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           LAYOUT
+           ═══════════════════════════════════════════════════════════ */
+        .app-container {
+            position: relative;
+            z-index: 1;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           HEADER
+           ═══════════════════════════════════════════════════════════ */
+        .app-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem 2rem;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            position: relative;
+            overflow: hidden;
+        }
+        .app-header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--accent-gradient);
+        }
+        .app-header .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: rgba(99,102,241,0.12);
+            border: 1px solid rgba(99,102,241,0.2);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-2);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 1.25rem;
+        }
+        .app-header h1 {
+            font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+            margin-bottom: 0.75rem;
+        }
+        .app-header .subtitle {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           PROGRESS BAR
+           ═══════════════════════════════════════════════════════════ */
+        .progress-container {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--bg-overlay);
+            backdrop-filter: blur(16px);
+            padding: 1rem 0;
+            margin: 0 -1.5rem 2rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .progress-inner {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        .progress-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .progress-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        .progress-percent {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-2);
+        }
+        .progress-bar-track {
+            height: 6px;
+            background: rgba(99,102,241,0.1);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--accent-gradient);
+            border-radius: 100px;
+            transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .progress-steps {
+            display: flex;
+            gap: 4px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .progress-step {
+            flex: 1;
+            min-width: 24px;
+            height: 4px;
+            border-radius: 100px;
+            background: rgba(99,102,241,0.1);
+            transition: background var(--transition-normal);
+            cursor: pointer;
+        }
+        .progress-step.completed { background: var(--accent-1); }
+        .progress-step.active { background: var(--accent-2); box-shadow: 0 0 8px rgba(99,102,241,0.4); }
+
+        /* ═══════════════════════════════════════════════════════════
+           SECTIONS (STEPS)
+           ═══════════════════════════════════════════════════════════ */
+        .form-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+        .form-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent-gradient);
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+        }
+        .form-section.active { border-color: var(--border-active); box-shadow: var(--shadow-glow); }
+        .form-section.active::before { opacity: 1; }
+        .form-section.completed { border-color: rgba(52,211,153,0.3); }
+        .form-section.completed::before { background: var(--success); opacity: 0.6; }
+        .form-section.hidden { display: none; }
+
+        .section-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .section-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            border-radius: 50%;
+            background: rgba(99,102,241,0.12);
+            border: 1px solid rgba(99,102,241,0.25);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--accent-2);
+            transition: all var(--transition-normal);
+        }
+        .form-section.completed .section-number {
+            background: var(--success-bg);
+            border-color: rgba(52,211,153,0.3);
+            color: var(--success);
+        }
+        .form-section.completed .section-number::after {
+            content: '✓';
+        }
+        .form-section.completed .section-number span { display: none; }
+
+        .section-title-group h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        .section-title-group .section-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           GUIDANCE CALLOUTS
+           ═══════════════════════════════════════════════════════════ */
+        .guidance {
+            padding: 1rem 1.25rem;
+            border-radius: var(--radius-sm);
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            border-left: 3px solid;
+        }
+        .guidance.info { background: var(--info-bg); border-color: var(--info); color: #93c5fd; }
+        .guidance.tip { background: var(--success-bg); border-color: var(--success); color: #6ee7b7; }
+        .guidance.warn { background: var(--warning-bg); border-color: var(--warning); color: #fcd34d; }
+        .guidance strong { color: inherit; font-weight: 600; }
+        .guidance code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            padding: 2px 6px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 4px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           FORM CONTROLS
+           ═══════════════════════════════════════════════════════════ */
+        .field-group {
+            margin-bottom: 1.5rem;
+        }
+        .field-group:last-child { margin-bottom: 0; }
+
+        label.field-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+        label.field-label .required {
+            color: var(--error);
+            margin-left: 2px;
+        }
+        .field-hint {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="email"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px 14px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            outline: none;
+            transition: all var(--transition-fast);
+        }
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--border-active);
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+        }
+        textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+        select { cursor: pointer; }
+        select option { background: var(--bg-secondary); color: var(--text-primary); }
+
+        .inline-fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        @media (max-width: 600px) {
+            .inline-fields { grid-template-columns: 1fr; }
+        }
+
+        /* Checkboxes & radios */
+        .checkbox-group, .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .checkbox-group.horizontal, .radio-group.horizontal {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .check-item, .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: 0.88rem;
+        }
+        .check-item:hover, .radio-item:hover {
+            border-color: var(--border-active);
+            background: var(--bg-card-hover);
+        }
+        .check-item input, .radio-item input { 
+            accent-color: var(--accent-1);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        .check-item.selected, .radio-item.selected {
+            border-color: var(--accent-1);
+            background: rgba(99,102,241,0.08);
+        }
+
+        /* Tags input */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 8px 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            min-height: 44px;
+            cursor: text;
+            transition: border-color var(--transition-fast);
+        }
+        .tags-container:focus-within {
+            border-color: var(--border-active);
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+        }
+        .tags-container .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: rgba(99,102,241,0.15);
+            border: 1px solid rgba(99,102,241,0.3);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--accent-3);
+            animation: tagIn 0.2s ease;
+        }
+        @keyframes tagIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .tag .tag-remove {
+            cursor: pointer;
+            font-size: 0.7rem;
+            opacity: 0.6;
+            transition: opacity var(--transition-fast);
+            padding: 0 2px;
+        }
+        .tag .tag-remove:hover { opacity: 1; color: var(--error); }
+        .tags-container input {
+            border: none;
+            background: none;
+            outline: none;
+            padding: 4px;
+            flex: 1;
+            min-width: 120px;
+            font-size: 0.88rem;
+            color: var(--text-primary);
+        }
+
+        /* Dynamic list / repeater */
+        .repeater { display: flex; flex-direction: column; gap: 8px; }
+        .repeater-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            animation: slideIn 0.2s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .repeater-row input, .repeater-row select { flex: 1; }
+        .repeater-row .btn-remove {
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
+            border-radius: 50%;
+            border: 1px solid rgba(248,113,113,0.3);
+            background: rgba(248,113,113,0.08);
+            color: var(--error);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .repeater-row .btn-remove:hover { background: rgba(248,113,113,0.2); }
+        .btn-add-row {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: rgba(99,102,241,0.08);
+            border: 1px dashed rgba(99,102,241,0.3);
+            border-radius: var(--radius-sm);
+            color: var(--accent-2);
+            font-size: 0.82rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            margin-top: 4px;
+        }
+        .btn-add-row:hover {
+            background: rgba(99,102,241,0.15);
+            border-color: rgba(99,102,241,0.5);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           PICO TABLE
+           ═══════════════════════════════════════════════════════════ */
+        .pico-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        @media (max-width: 600px) { .pico-grid { grid-template-columns: 1fr; } }
+        .pico-card {
+            padding: 1.25rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-input);
+        }
+        .pico-card h4 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+        .pico-card.p h4 { color: #f472b6; }
+        .pico-card.i h4 { color: #60a5fa; }
+        .pico-card.c h4 { color: #fbbf24; }
+        .pico-card.o h4 { color: #34d399; }
+        .pico-card .pico-hint {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .pico-card textarea {
+            min-height: 80px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           BOOLEAN QUERY BUILDER PREVIEW
+           ═══════════════════════════════════════════════════════════ */
+        .query-preview {
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 1rem 1.25rem;
+            margin-top: 1rem;
+            position: relative;
+        }
+        .query-preview-label {
+            position: absolute;
+            top: -10px;
+            left: 12px;
+            background: var(--bg-card);
+            padding: 0 8px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .query-preview code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            color: var(--accent-3);
+            line-height: 1.8;
+            word-break: break-all;
+        }
+        .query-preview code .op { color: #f59e0b; font-weight: 600; }
+        .query-preview code .term { color: #34d399; }
+
+        /* ═══════════════════════════════════════════════════════════
+           NAVIGATION BUTTONS
+           ═══════════════════════════════════════════════════════════ */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border-radius: var(--radius-sm);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-decoration: none;
+        }
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .btn-secondary {
+            background: rgba(99,102,241,0.08);
+            border: 1px solid rgba(99,102,241,0.25);
+            color: var(--accent-2);
+        }
+        .btn-secondary:hover:not(:disabled) {
+            background: rgba(99,102,241,0.15);
+        }
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: 0 2px 8px rgba(99,102,241,0.3);
+        }
+        .btn-primary:hover:not(:disabled) {
+            box-shadow: 0 4px 16px rgba(99,102,241,0.4);
+            transform: translateY(-1px);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: white;
+            box-shadow: 0 2px 8px rgba(16,185,129,0.3);
+        }
+        .btn-success:hover:not(:disabled) {
+            box-shadow: 0 4px 16px rgba(16,185,129,0.4);
+            transform: translateY(-1px);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           SUMMARY / REVIEW PANEL
+           ═══════════════════════════════════════════════════════════ */
+        .review-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+        }
+        .review-section {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .review-section:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
+        .review-section h3 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--accent-2);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .review-item {
+            display: flex;
+            gap: 8px;
+            padding: 6px 0;
+            font-size: 0.85rem;
+        }
+        .review-item .rl { color: var(--text-muted); min-width: 160px; font-weight: 500; }
+        .review-item .rv { color: var(--text-primary); }
+        .review-item .rv.empty { color: var(--text-muted); font-style: italic; }
+
+        /* ═══════════════════════════════════════════════════════════
+           EXPORT ACTIONS
+           ═══════════════════════════════════════════════════════════ */
+        .export-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .export-card {
+            padding: 1.5rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            text-align: center;
+            transition: all var(--transition-fast);
+            cursor: pointer;
+        }
+        .export-card:hover {
+            border-color: var(--border-active);
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        .export-card .export-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+        .export-card h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        .export-card p {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           MODAL
+           ═══════════════════════════════════════════════════════════ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-normal);
+        }
+        .modal-overlay.visible { opacity: 1; visibility: visible; }
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: translateY(20px);
+            transition: transform var(--transition-normal);
+        }
+        .modal-overlay.visible .modal { transform: translateY(0); }
+        .modal h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .modal pre {
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            overflow-x: auto;
+            line-height: 1.6;
+            color: var(--accent-3);
+            margin-bottom: 1rem;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           ANIMATIONS
+           ═══════════════════════════════════════════════════════════ */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .form-section { animation: fadeInUp 0.4s ease forwards; }
+
+        /* ═══════════════════════════════════════════════════════════
+           TOOLTIP
+           ═══════════════════════════════════════════════════════════ */
+        .tooltip-trigger {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: rgba(99,102,241,0.12);
+            color: var(--accent-2);
+            font-size: 0.65rem;
+            font-weight: 700;
+            cursor: help;
+            margin-left: 6px;
+            position: relative;
+        }
+        .tooltip-trigger .tooltip-text {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            bottom: 130%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-active);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            white-space: normal;
+            width: 240px;
+            z-index: 50;
+            transition: all var(--transition-fast);
+            line-height: 1.5;
+            box-shadow: var(--shadow-md);
+        }
+        .tooltip-trigger:hover .tooltip-text { visibility: visible; opacity: 1; }
+
+        /* ═══════════════════════════════════════════════════════════
+           RESPONSIVE
+           ═══════════════════════════════════════════════════════════ */
+        @media (max-width: 640px) {
+            .app-container { padding: 1rem; }
+            .form-section { padding: 1.25rem; }
+            .nav-buttons { flex-direction: column; }
+            .nav-buttons .btn { width: 100%; justify-content: center; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 100px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(99,102,241,0.5); }
+    </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     HEADER
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="app-container">
+    <header class="app-header">
+        <div class="badge">📋 Formulário Autoguiado</div>
+        <h1>Desenho de Pesquisa para Revisão Sistemática</h1>
+        <p class="subtitle">Configure cada etapa do protocolo de pesquisa seguindo as diretrizes do Cochrane Handbook (2019), Campbell (2020) e PRISMA 2020. Ao final, exporte os arquivos de configuração para os coletores e as planilhas de gestão do processo.</p>
+    </header>
+
+    <!-- ═══ PROGRESS BAR ═══ -->
+    <div class="progress-container" id="progressContainer">
+        <div class="progress-inner">
+            <div class="progress-meta">
+                <span class="progress-label" id="progressLabel">Etapa 1 de 10</span>
+                <span class="progress-percent" id="progressPercent">0%</span>
+            </div>
+            <div class="progress-bar-track">
+                <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-steps" id="progressSteps"></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         STEP 1: IDENTIFICAÇÃO DO PROTOCOLO
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="form-section active" data-step="1" id="step1">
+        <div class="section-header">
+            <div class="section-number"><span>1</span></div>
+            <div class="section-title-group">
+                <h2>Identificação do Protocolo</h2>
+                <p class="section-desc">Informações básicas que identificam a revisão e sua equipe.</p>
+            </div>
+        </div>
+        <div class="guidance info">
+            <strong>📖 Cochrane (2019), Cap. 1:</strong> O protocolo de revisão sistemática deve ser registrado previamente para garantir transparência e evitar duplicação de esforços. Registre-o no PROSPERO quando possível.
+        </div>
+        <div class="field-group">
+            <label class="field-label" for="titulo_revisao">Título da Revisão Sistemática <span class="required">*</span></label>
+            <div class="field-hint">Deve conter a estrutura PICO. Ex.: "Efeitos de [Intervenção] em [Desfecho] para [População]: Uma Revisão Sistemática"</div>
+            <textarea id="titulo_revisao" rows="2" placeholder="Ex.: Aplicação da inferência causal em estudos de saneamento básico no Brasil: Uma revisão sistemática da literatura"></textarea>
+        </div>
+        <div class="inline-fields">
+            <div class="field-group">
+                <label class="field-label" for="pesquisador_principal">Pesquisador Principal <span class="required">*</span></label>
+                <input type="text" id="pesquisador_principal" placeholder="Nome completo">
+            </div>
+            <div class="field-group">
+                <label class="field-label" for="email_pesquisador">E-mail de contato</label>
+                <input type="email" id="email_pesquisador" placeholder="pesquisador@universidade.edu.br">
+            </div>
+        </div>
+        <div class="inline-fields">
+            <div class="field-group">
+                <label class="field-label" for="instituicao">Instituição / Programa</label>
+                <input type="text" id="instituicao" placeholder="Ex.: PPGES - UFES">
+            </div>
+            <div class="field-group">
+                <label class="field-label" for="data_protocolo">Data do Protocolo</label>
+                <input type="text" id="data_protocolo" placeholder="DD/MM/AAAA">
+            </div>
+        </div>
+        <div class="field-group">
+            <label class="field-label">Membros da equipe de revisão</label>
+            <div class="field-hint">Adicione os nomes dos co-revisores. Mínimo recomendado: 2 revisores para a triagem (Cochrane, 2019).</div>
+            <div class="repeater" id="repeater_equipe">
+                <div class="repeater-row">
+                    <input type="text" placeholder="Nome do revisor" class="equipe-member">
+                    <select class="equipe-role">
+                        <option value="Revisor">Revisor</option>
+                        <option value="Orientador">Orientador</option>
+                        <option value="Co-orientador">Co-orientador</option>
+                        <option value="Bibliotecário">Bibliotecário</option>
+                        <option value="Estatístico">Estatístico</option>
+                    </select>
+                    <button class="btn-remove" onclick="removeRepeaterRow(this)" title="Remover">×</button>
+                </div>
+            </div>
+            <button class="btn-add-row" onclick="addTeamMember()">+ Adicionar membro</button>
+        </div>
+        <div class="field-group">
+            <label class="field-label" for="registro_prospero">Número de registro PROSPERO</label>
+            <div class="field-hint">Se já registrado. Ex.: CRD42024000000</div>
+            <input type="text" id="registro_prospero" placeholder="CRD42024...">
+        </div>
+        <div class="nav-buttons">
+            <div></div>
+            <button class="btn btn-primary" onclick="nextStep(1)">Próxima etapa →</button>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         STEP 2: QUESTÃO DE PESQUISA (PICO/PICo/SPIDER)
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="form-section hidden" data-step="2" id="step2">
+        <div class="section-header">
+            <div class="section-number"><span>2</span></div>
+            <div class="section-title-group">
+                <h2>Questão de Pesquisa</h2>
+                <p class="section-desc">Defina a pergunta central usando um framework estruturado.</p>
+            </div>
+        </div>
+        <div class="guidance info">
+            <strong>📖 Cochrane (2019), Cap. 2:</strong> A pergunta deve ser clara, focada e formulável dentro de um framework (PICO, PICo, SPIDER, PEO). Para revisões de intervenção, use PICO. Para revisões qualitativas/exploratórias, use PICo ou SPIDER.
+        </div>
+        <div class="field-group">
+            <label class="field-label">Framework de estruturação <span class="required">*</span></label>
+            <div class="radio-group horizontal">
+                <label class="radio-item" onclick="selectRadio(this)">
+                    <input type="radio" name="framework" value="PICO" checked> <strong>PICO</strong> — Intervenção
+                </label>
+                <label class="radio-item selected" onclick="selectRadio(this)">
+                    <input type="radio" name="framework" value="PICo"> <strong>PICo</strong> — Exploratória
+                </label>
+                <label class="radio-item" onclick="selectRadio(this)">
+                    <input type="radio" name="framework" value="SPIDER"> <strong>SPIDER</strong> — Qualitativa
+                </label>
+                <label class="radio-item" onclick="selectRadio(this)">
+                    <input type="radio" name="framework" value="PEO"> <strong>PEO</strong> — Exposição
+                </label>
+            </div>
+        </div>
+        <div class="pico-grid" id="picoGrid">
+            <div class="pico-card p">
+                <h4 id="pico_p_label">P — População / Problema</h4>
+                <p class="pico-hint" id="pico_p_hint">Quem são os participantes ou qual é o contexto do problema?</p>
+                <textarea id="pico_p" placeholder="Ex.: Populações em áreas com déficit de saneamento básico no Brasil"></textarea>
+            </div>
+            <div class="pico-card i">
+                <h4 id="pico_i_label">I — Interesse / Intervenção</h4>
+                <p class="pico-hint" id="pico_i_hint">Qual fenômeno de interesse, intervenção ou exposição?</p>
+                <textarea id="pico_i" placeholder="Ex.: Aplicação de métodos de inferência causal"></textarea>
+            </div>
+            <div class="pico-card c">
+                <h4 id="pico_c_label">Co — Contexto / Comparação</h4>
+                <p class="pico-hint" id="pico_c_hint">Qual o contexto ou comparador?</p>
+                <textarea id="pico_c" placeholder="Ex.: Estudos observacionais e experimentais no contexto latino-americano"></textarea>
+            </div>
+            <div class="pico-card o">
+                <h4 id="pico_o_label">O — Resultado (Outcome)</h4>
+                <p class="pico-hint" id="pico_o_hint">Quais desfechos ou resultados são avaliados?</p>
+                <textarea id="pico_o" placeholder="Ex.: Impacto na saúde pública, indicadores epidemiológicos, efetividade de políticas"></textarea>
+            </div>
+        </div>
+        <div class="field-group">
+            <label class="field-label" for="pergunta_pesquisa">Pergunta de pesquisa em formato de sentença <span class="required">*</span></label>
+            <textarea id="pergunta_pesquisa" rows="3" placeholder="Ex.: Como a inferência causal tem sido aplicada em estudos de saneamento básico e quais seus impactos na avaliação de políticas públicas de saúde?"></textarea>
+        </div>
+        <div class="nav-buttons">
+            <button class="btn btn-secondary" onclick="prevStep(2)">← Anterior</button>
+            <button class="btn btn-primary" onclick="nextStep(2)">Próxima etapa →</button>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         STEP 3: CRITÉRIOS DE ELEGIBILIDADE
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="form-section hidden" data-step="3" id="step3">
+        <div class="section-header">
+            <div class="section-number"><span>3</span></div>
+            <div class="section-title-group">
+                <h2>Critérios de Elegibilidade</h2>
+                <p class="section-desc">Defina os critérios de inclusão e exclusão a priori.</p>
+            </div>
+        </div>
+        <div class="guidance tip">
+            <strong>📖 Campbell (2020):</strong> Os critérios devem ser definidos antes da busca para evitar viés de seleção. Documente explicitamente os tipos de estudo, participantes, intervenção/exposição e desfechos aceitáveis.
+        </div>
+        <div class="field-group">
+            <label class="field-label">Critérios de Inclusão <span class="required">*</span></label>
+            <div class="field-hint">Condições que um estudo DEVE atender para ser incluído.</div>
+            <div class="repeater" id="repeater_inclusao">
+                <div class="repeater-row">
+                    <input type="text" placeholder="Ex.: Artigos publicados em periódicos revisados por pares" class="criterio-inclusao">
+                    <button class="btn-remove" onclick="removeRepeaterRow(this)">×</button>
+                </div>
+                <div class="repeater-row">
+                    <input type="text" placeholder="Ex.: Estudos que apliquem ao menos um método de inferência causal" class="criterio-inclusao">
+                    <button class="btn-remove" onclick="removeRepeaterRow(this)">×</button>
+                </div>
+                <div class="repeater-row">
+                    <input type="text" placeholder="Ex.: Publicados entre 2000 e 2026" class="criterio-inclusao">
+                    <button class="btn-remove" onclick="removeRepeaterRow(this)">×</button>
+                </div>
+            </div>
+            <button class="btn-add-row" onclick="addRepeaterRow('repeater_inclusao', 'criterio-inclusao', 'Novo critério de inclusão')">+ Adicionar critério</button>
+        </div>
+        <div class="field-group">
+            <label class="field-label">Critérios de Exclusão <span class="required">*</span></label>
+            <div class="field-hint">Condições que EXCLUEM um estudo mesmo que atenda os critérios acima.</div>
+            <div class="repeater" id="repeater_exclusao">
+                <div class="repeater-row">
+                    <input type="text" placeholder="Ex.: Artigos de opinião, editoriais e cartas ao editor" class="criterio-exclusao">
+                    <button class="btn-remove" onclick="removeRepeaterRow(this)">×</button>
+                </div>
+                <div class="repeater-row">
+                    <input type="text" placeholder="Ex.: Estudos sem texto completo disponível" class="criterio-exclusao">
+                    <button class="btn-remove" onclick="removeRepeaterRow(this)">×</button>
+                </div>
+            </div>
+            <button class="btn-add-row" onclick="addRepeaterRow('repeater_exclusao', 'criterio-exclusao', 'Novo critério de exclusão')">+ Adicionar critério</button>
+        </div>
+        <div class="inline-fields">
+            <div class="field-group">
+                <label class="field-label">Tipos de estudo aceitos</label>
+                <div class="checkbox-group" id="tipos_estudo">
+                    <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Ensaio clínico randomizado"> Ensaio clínico randomizado (ECR)</label>
+                    <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Estudo de coorte"> Estudo de coorte</label>
+                    <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Caso-controle"> Caso-controle</label>
+                    <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Estudo transversal"> Estudo transversal</label>
+                    <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Quasi-experimental"> Quasi-experimental</label>
+                    <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Estudo qualitativo"> Estudo qualitativo</label>
+                    <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Revisão de escopo"> Revisão de escopo</label>
+                    <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Estudo misto"> Métodos mistos</label>
+                </div>
+            </div>
+            <div class="field-group">
+                <label class="field-label">Idiomas aceitos</label>
+                <div class="checkbox-group" id="idiomas_aceitos">
+                    <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Português" checked> Português</label>
+                    <label class="check-item selected" onclick="toggleCheck(this)"><input type="checkbox" value="Inglês" checked> Inglês</label>
+                    <label class="check-item selected" onclick="toggleCheck(this)"><input type="checkbox" value="Espanhol" checked> Espanhol</label>
+                    <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Francês"> Francês</label>
+                    <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Sem restrição"> Sem restrição de idioma</label>
+                </div>
+            </div>
+        </div>
+        <div class="nav-buttons">
+            <button class="btn btn-secondary" onclick="prevStep(3)">← Anterior</button>
+            <button class="btn btn-primary" onclick="nextStep(3)">Próxima etapa →</button>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         STEP 4: ESTRATÉGIA DE BUSCA
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="form-section hidden" data-step="4" id="step4">
+        <div class="section-header">
+            <div class="section-number"><span>4</span></div>
+            <div class="section-title-group">
+                <h2>Estratégia de Busca</h2>
+                <p class="section-desc">Monte a expressão booleana e defina os termos para alimentar os coletores.</p>
+            </div>
+        </div>
+        <div class="guidance info">
+            <strong>📖 Cochrane (2019), Cap. 4:</strong> A estratégia de busca deve ser altamente sensível. Use termos livres, descritores controlados (MeSH/DeCS) e sinônimos. Combine blocos conceituais com operadores booleanos (AND, OR, NOT).
+        </div>
+
+        <div class="field-group">
+            <label class="field-label">Bloco conceitual 1 — População/Problema <span class="required">*</span>
+                <span class="tooltip-trigger">?<span class="tooltip-text">Liste todos os sinônimos, termos MeSH/DeCS e variações do conceito de população. Cada termo será ligado por OR.</span></span>
+            </label>
+            <div class="tags-container" id="tags_bloco1" onclick="focusTagInput(this)">
+                <input type="text" placeholder="Digite o termo e pressione Enter..." onkeydown="handleTagInput(event, 'tags_bloco1')">
+            </div>
+        </div>
+        <div class="field-group">
+            <label class="field-label">Bloco conceitual 2 — Intervenção/Interesse <span class="required">*</span>
+                <span class="tooltip-trigger">?<span class="tooltip-text">Termos do conceito de intervenção ou fenômeno de interesse, ligados por OR entre si.</span></span>
+            </label>
+            <div class="tags-container" id="tags_bloco2" onclick="focusTagInput(this)">
+                <input type="text" placeholder="Digite o termo e pressione Enter..." onkeydown="handleTagInput(event, 'tags_bloco2')">
+            </div>
+        </div>
+        <div class="field-group">
+            <label class="field-label">Bloco conceitual 3 — Contexto/Desfecho (opcional)
+                <span class="tooltip-trigger">?<span class="tooltip-text">Termos adicionais para refinar a busca. Deixe vazio se não for necessário restringir mais.</span></span>
+            </label>
+            <div class="tags-container" id="tags_bloco3" onclick="focusTagInput(this)">
+                <input type="text" placeholder="Digite o termo e pressione Enter..." onkeydown="handleTagInput(event, 'tags_bloco3')">
+            </div>
+        </div>
+        <div class="field-group">
+            <label class="field-label">Operador entre blocos</label>
+            <div class="radio-group horizontal">
+                <label class="radio-item selected" onclick="selectRadio(this); updateQueryPreview()">
+                    <input type="radio" name="operador_blocos" value="AND" checked> AND
+                </label>
+                <label class="radio-item" onclick="selectRadio(this); updateQueryPreview()">
+                    <input type="radio" name="operador_blocos" value="AND NOT"> AND NOT
+                </label>
+            </div>
+        </div>
+        <div class="query-preview" id="queryPreview">
+            <div class="query-preview-label">Prévia da expressão booleana</div>
+            <code id="queryPreviewCode">Configure os blocos acima para gerar a expressão...</code>
+        </div>
+        <div class="inline-fields" style="margin-top:1.5rem">
+            <div class="field-group">
+                <label class="field-label" for="ano_inicio">Ano inicial do recorte temporal <span class="required">*</span></label>
+                <input type="number" id="ano_inicio" value="2000" min="1900" max="2030">
+            </div>
+            <div class="field-group">
+                <label class="field-label" for="ano_fim">Ano final do recorte temporal <span class="required">*</span></label>
+                <input type="number" id="ano_fim" value="2026" min="1900" max="2030">
+            </div>
+        </div>
+        <div class="field-group">
+            <label class="field-label">Campo de busca na Scopus</label>
+            <div class="field-hint">Define em quais campos da Scopus a busca será aplicada.</div>
+            <select id="scopus_field">
+                <option value="TITLE-ABS-KEY">TITLE-ABS-KEY (Título, Resumo e Palavras-chave)</option>
+                <option value="TITLE">TITLE (Somente título)</option>
+                <option value="ABS">ABS (Somente resumo)</option>
+                <option value="KEY">KEY (Somente palavras-chave)</option>
+                <option value="ALL">ALL (Todos os campos)</option>
+            </select>
+        </div>
+        <div class="nav-buttons">
+            <button class="btn btn-secondary" onclick="prevStep(4)">← Anterior</button>
+            <button class="btn btn-primary" onclick="nextStep(4)">Próxima etapa →</button>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         STEP 5: FONTES DE DADOS (BASES)
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="form-section hidden" data-step="5" id="step5">
+        <div class="section-header">
+            <div class="section-number"><span>5</span></div>
+            <div class="section-title-group">
+                <h2>Fontes de Dados</h2>
+                <p class="section-desc">Selecione as bases de dados a serem consultadas pelos coletores.</p>
+            </div>
+        </div>
+        <div class="guidance info">
+            <strong>📖 Cochrane (2019), Cap. 4.3:</strong> No mínimo MEDLINE e Cochrane Library. Campbell (2020) recomenda pelo menos 3 bases relevantes à área. As bases escolhidas determinam os configs que serão gerados.
+        </div>
+        <div class="field-group">
+            <label class="field-label">Bases disponíveis no software <span class="required">*</span></label>
+            <div class="checkbox-group" id="bases_software">
+                <label class="check-item selected" onclick="toggleCheck(this)">
+                    <input type="checkbox" value="BDTD" checked> 
+                    <div><strong>BDTD</strong> — Teses e Dissertações brasileiras (IBICT)</div>
+                </label>
+                <label class="check-item selected" onclick="toggleCheck(this)">
+                    <input type="checkbox" value="SciELO" checked>
+                    <div><strong>SciELO</strong> — Periódicos Latino-americanos de acesso aberto</div>
+                </label>
+                <label class="check-item selected" onclick="toggleCheck(this)">
+                    <input type="checkbox" value="Scopus" checked>
+                    <div><strong>Scopus</strong> — Base global Elsevier (requer API key)</div>
+                </label>
+                <label class="check-item selected" onclick="toggleCheck(this)">
+                    <input type="checkbox" value="OpenAlex" checked>
+                    <div><strong>OpenAlex</strong> — Agregador global aberto (OurResearch)</div>
+                </label>
+            </div>
+        </div>
+        <div class="field-group">
+            <label class="field-label">Bases adicionais consultadas manualmente</label>
+            <div class="field-hint">Bases que serão buscadas fora do software (importação manual de registros).</div>
+            <div class="repeater" id="repeater_bases_manuais">
+                <div class="repeater-row">
+                    <input type="text" placeholder="Ex.: PubMed / MEDLINE" class="base-manual">
+                    <button class="btn-remove" onclick="removeRepeaterRow(this)">×</button>
+                </div>
+                <div class="repeater-row">
+                    <input type="text" placeholder="Ex.: Web of Science" class="base-manual">
+                    <button class="btn-remove" onclick="removeRepeaterRow(this)">×</button>
+                </div>
+            </div>
+            <button class="btn-add-row" onclick="addRepeaterRow('repeater_bases_manuais', 'base-manual', 'Nome da base')">+ Adicionar base</button>
+        </div>
+        <div class="field-group">
+            <label class="field-label" for="scopus_api_key">Scopus API Key</label>
+            <div class="field-hint">Obtenha em <a href="https://dev.elsevier.com/" target="_blank" style="color:var(--accent-2)">dev.elsevier.com</a>. Deixe em branco para usar a chave do config atual.</div>
+            <input type="text" id="scopus_api_key" placeholder="Ex.: 33698870c47d2706e3a3fc4c03397832">
+        </div>
+        <div class="field-group">
+            <label class="field-label" for="email_api">E-mail para Polite Pool (OpenAlex/SciELO)</label>
+            <div class="field-hint">Garante limites ampliados de requisição. Ex.: user@mail.com</div>
+            <input type="email" id="email_api" placeholder="pesquisador@universidade.edu.br">
+        </div>
+        <div class="nav-buttons">
+            <button class="btn btn-secondary" onclick="prevStep(5)">← Anterior</button>
+            <button class="btn btn-primary" onclick="nextStep(5)">Próxima etapa →</button>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         STEP 6: TRIAGEM E SELEÇÃO
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="form-section hidden" data-step="6" id="step6">
+        <div class="section-header">
+            <div class="section-number"><span>6</span></div>
+            <div class="section-title-group">
+                <h2>Triagem e Seleção</h2>
+                <p class="section-desc">Defina o processo de screening por título/resumo e texto completo.</p>
+            </div>
+        </div>
+        <div class="guidance tip">
+            <strong>📖 Cochrane (2019), Cap. 4.6:</strong> A triagem deve ser feita em duas fases: (1) título e resumo, (2) texto completo. Pelo menos dois revisores independentes devem participar para reduzir viés. Conflitos devem ser resolvidos por consenso ou um terceiro revisor.
+        </div>
+        <div class="field-group">
+            <label class="field-label">Número de revisores na triagem por título/resumo <span class="required">*</span></label>
+            <div class="radio-group horizontal">
+                <label class="radio-item" onclick="selectRadio(this)"><input type="radio" name="revisores_triagem" value="1"> 1 revisor</label>
+                <label class="radio-item selected" onclick="selectRadio(this)"><input type="radio" name="revisores_triagem" value="2" checked> 2 revisores (recomendado)</label>
+                <label class="radio-item" onclick="selectRadio(this)"><input type="radio" name="revisores_triagem" value="3+"> 3 ou mais</label>
+            </div>
+        </div>
+        <div class="field-group">
+            <label class="field-label">Método de resolução de conflitos</label>
+            <select id="resolucao_conflitos">
+                <option value="Consenso entre revisores">Consenso entre revisores</option>
+                <option value="Terceiro revisor independente">Terceiro revisor independente</option>
+                <option value="Voto majoritário">Voto majoritário</option>
+                <option value="Decisão do orientador">Decisão do orientador</option>
+            </select>
+        </div>
+        <div class="field-group">
+            <label class="field-label">Software para triagem / gestão de referências</label>
+            <div class="field-hint">Escolha o software auxiliar para organizar a triagem (ou use as planilhas geradas).</div>
+            <select id="software_triagem">
+                <option value="Planilhas geradas pelo coletor (Excel)">Planilhas geradas pelo coletor (Excel) — sem software externo</option>
+                <option value="Rayyan">Rayyan (rayyan.ai)</option>
+                <option value="Covidence">Covidence</option>
+                <option value="ASReview">ASReview (Machine Learning)</option>
+                <option value="Parsifal">Parsifal</option>
+                <option value="Mendeley">Mendeley</option>
+                <option value="Zotero">Zotero</option>
+                <option value="EndNote">EndNote</option>
+            </select>
+        </div>
+        <div class="field-group">
+            <label class="field-label">Piloto de calibração</label>
+            <div class="field-hint">Cochrane recomenda calibrar os critérios com um lote-piloto antes da triagem completa.</div>
+            <div class="inline-fields">
+                <div>
+                    <label class="field-label" for="piloto_tamanho">Tamanho do lote-piloto</label>
+                    <input type="number" id="piloto_tamanho" value="30" min="10" max="200">
+                </div>
+                <div>
+                    <label class="field-label" for="piloto_kappa">Meta de concordância (Kappa)</label>
+                    <input type="text" id="piloto_kappa" value="≥ 0.80" placeholder="≥ 0.80">
+                </div>
+            </div>
+        </div>
+        <div class="nav-buttons">
+            <button class="btn btn-secondary" onclick="prevStep(6)">← Anterior</button>
+            <button class="btn btn-primary" onclick="nextStep(6)">Próxima etapa →</button>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         STEP 7: EXTRAÇÃO DE DADOS
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="form-section hidden" data-step="7" id="step7">
+        <div class="section-header">
+            <div class="section-number"><span>7</span></div>
+            <div class="section-title-group">
+                <h2>Extração de Dados</h2>
+                <p class="section-desc">Defina as variáveis a serem extraídas dos estudos incluídos.</p>
+            </div>
+        </div>
+        <div class="guidance info">
+            <strong>📖 Cochrane (2019), Cap. 5:</strong> Use formulários padronizados de extração. Extraia dados bibliográficos, características do estudo, detalhes da intervenção, desfechos e resultados numéricos. Faça extração dupla para minimizar erros.
+        </div>
+        <div class="field-group">
+            <label class="field-label">Variáveis para extração <span class="required">*</span></label>
+            <div class="field-hint">Selecione os campos que devem compor a planilha de extração de dados. Campos coletados automaticamente pelo software estão marcados como (Auto).</div>
+            <div class="checkbox-group" id="variaveis_extracao">
+                <label class="check-item selected" onclick="toggleCheck(this)"><input type="checkbox" value="Título" checked> Título (Auto)</label>
+                <label class="check-item selected" onclick="toggleCheck(this)"><input type="checkbox" value="Autores" checked> Autores (Auto)</label>
+                <label class="check-item selected" onclick="toggleCheck(this)"><input type="checkbox" value="Ano" checked> Ano (Auto)</label>
+                <label class="check-item selected" onclick="toggleCheck(this)"><input type="checkbox" value="DOI" checked> DOI (Auto)</label>
+                <label class="check-item selected" onclick="toggleCheck(this)"><input type="checkbox" value="Periódico/Fonte" checked> Periódico / Fonte (Auto)</label>
+                <label class="check-item selected" onclick="toggleCheck(this)"><input type="checkbox" value="Resumo" checked> Resumo (Auto)</label>
+                <label class="check-item selected" onclick="toggleCheck(this)"><input type="checkbox" value="Palavras-chave" checked> Palavras-chave (Auto)</label>
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Objetivo do estudo"> Objetivo do estudo</label>
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Desenho do estudo"> Desenho do estudo</label>
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Tamanho da amostra"> Tamanho da amostra</label>
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Método estatístico"> Método estatístico principal</label>
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Principais resultados"> Principais resultados</label>
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Limitações reportadas"> Limitações reportadas</label>
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="País do estudo"> País do estudo</label>
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Financiamento"> Financiamento / Conflito de interesse</label>
+            </div>
+        </div>
+        <div class="field-group">
+            <label class="field-label">Variáveis personalizadas adicionais</label>
+            <div class="repeater" id="repeater_variaveis">
+                <div class="repeater-row">
+                    <input type="text" placeholder="Nome da variável personalizada" class="var-custom">
+                    <button class="btn-remove" onclick="removeRepeaterRow(this)">×</button>
+                </div>
+            </div>
+            <button class="btn-add-row" onclick="addRepeaterRow('repeater_variaveis', 'var-custom', 'Nome da variável')">+ Adicionar variável</button>
+        </div>
+        <div class="field-group">
+            <label class="field-label">Extração dupla independente?</label>
+            <div class="radio-group horizontal">
+                <label class="radio-item selected" onclick="selectRadio(this)"><input type="radio" name="extracao_dupla" value="Sim" checked> Sim (recomendado)</label>
+                <label class="radio-item" onclick="selectRadio(this)"><input type="radio" name="extracao_dupla" value="Não"> Não</label>
+                <label class="radio-item" onclick="selectRadio(this)"><input type="radio" name="extracao_dupla" value="Parcial"> Parcial (amostra de verificação)</label>
+            </div>
+        </div>
+        <div class="nav-buttons">
+            <button class="btn btn-secondary" onclick="prevStep(7)">← Anterior</button>
+            <button class="btn btn-primary" onclick="nextStep(7)">Próxima etapa →</button>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         STEP 8: AVALIAÇÃO DE QUALIDADE
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="form-section hidden" data-step="8" id="step8">
+        <div class="section-header">
+            <div class="section-number"><span>8</span></div>
+            <div class="section-title-group">
+                <h2>Avaliação da Qualidade Metodológica</h2>
+                <p class="section-desc">Defina o instrumento de avaliação de risco de viés.</p>
+            </div>
+        </div>
+        <div class="guidance info">
+            <strong>📖 Cochrane (2019), Cap. 8:</strong> Use ferramentas validadas de avaliação de viés. A ferramenta ROB 2 é padrão para ECRs; ROBINS-I para estudos não randomizados. Para revisões de escopo, considere MMAT ou checklists JBI.
+        </div>
+        <div class="field-group">
+            <label class="field-label">Ferramenta de avaliação de viés <span class="required">*</span></label>
+            <select id="ferramenta_viés">
+                <option value="ROB 2 (Cochrane)">ROB 2 — Risk of Bias 2 (Cochrane, para ECRs)</option>
+                <option value="ROBINS-I">ROBINS-I — Estudos não randomizados de intervenção</option>
+                <option value="Newcastle-Ottawa Scale (NOS)">Newcastle-Ottawa Scale (NOS) — Coorte e caso-controle</option>
+                <option value="JBI Checklist">JBI Critical Appraisal Checklists</option>
+                <option value="MMAT">Mixed Methods Appraisal Tool (MMAT)</option>
+                <option value="CASP">CASP — Critical Appraisal Skills Programme</option>
+                <option value="GRADE">GRADE — Avaliação da certeza da evidência</option>
+                <option value="Outra">Outra (especifique nas observações)</option>
+                <option value="Não aplicável">Não aplicável (revisão de escopo)</option>
+            </select>
+        </div>
+        <div class="field-group">
+            <label class="field-label">Classificação de qualidade</label>
+            <div class="field-hint">Defina os níveis de classificação que aparecerão na planilha.</div>
+            <div class="radio-group horizontal">
+                <label class="radio-item selected" onclick="selectRadio(this)"><input type="radio" name="classificacao_qual" value="Alto/Moderado/Baixo risco" checked> Alto / Moderado / Baixo risco</label>
+                <label class="radio-item" onclick="selectRadio(this)"><input type="radio" name="classificacao_qual" value="A/B/C"> A / B / C</label>
+                <label class="radio-item" onclick="selectRadio(this)"><input type="radio" name="classificacao_qual" value="Pontuação numérica"> Pontuação numérica</label>
+            </div>
+        </div>
+        <div class="field-group">
+            <label class="field-label" for="obs_qualidade">Observações sobre avaliação de qualidade</label>
+            <textarea id="obs_qualidade" rows="3" placeholder="Domínios específicos a avaliar, adaptações da ferramenta, etc."></textarea>
+        </div>
+        <div class="nav-buttons">
+            <button class="btn btn-secondary" onclick="prevStep(8)">← Anterior</button>
+            <button class="btn btn-primary" onclick="nextStep(8)">Próxima etapa →</button>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         STEP 9: SÍNTESE E ANÁLISE
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="form-section hidden" data-step="9" id="step9">
+        <div class="section-header">
+            <div class="section-number"><span>9</span></div>
+            <div class="section-title-group">
+                <h2>Síntese dos Resultados</h2>
+                <p class="section-desc">Planeje a estratégia de síntese e o tipo de análise.</p>
+            </div>
+        </div>
+        <div class="guidance info">
+            <strong>📖 Cochrane (2019), Cap. 10-12:</strong> A meta-análise é viável quando os estudos são homogêneos o suficiente. Caso contrário, opte por síntese narrativa estruturada. Avalie a heterogeneidade (I²) e planeje análises de sensibilidade.
+        </div>
+        <div class="field-group">
+            <label class="field-label">Tipo de síntese planejada <span class="required">*</span></label>
+            <div class="checkbox-group" id="tipo_sintese">
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Meta-análise"> Meta-análise quantitativa</label>
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Síntese narrativa"> Síntese narrativa estruturada</label>
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Síntese temática"> Síntese temática (qualitativa)</label>
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Análise bibliométrica"> Análise bibliométrica</label>
+                <label class="check-item" onclick="toggleCheck(this)"><input type="checkbox" value="Mapeamento sistemático"> Mapeamento sistemático</label>
+            </div>
+        </div>
+        <div class="field-group">
+            <label class="field-label">Software para análise</label>
+            <select id="software_analise">
+                <option value="R (meta / metafor)">R — pacotes meta / metafor</option>
+                <option value="Python (pandas + statsmodels)">Python — pandas + statsmodels</option>
+                <option value="RevMan (Cochrane)">RevMan (Cochrane Review Manager)</option>
+                <option value="STATA">STATA</option>
+                <option value="Não definido">Ainda não definido</option>
+            </select>
+        </div>
+        <div class="field-group">
+            <label class="field-label" for="obs_sintese">Planejamento de análises adicionais</label>
+            <div class="field-hint">Análises de subgrupo, análise de sensibilidade, funnel plot, etc.</div>
+            <textarea id="obs_sintese" rows="3" placeholder="Ex.: Análise de subgrupo por país; Análise de sensibilidade excluindo estudos de baixa qualidade; Funnel plot para viés de publicação."></textarea>
+        </div>
+        <div class="nav-buttons">
+            <button class="btn btn-secondary" onclick="prevStep(9)">← Anterior</button>
+            <button class="btn btn-primary" onclick="nextStep(9)">Próxima etapa →</button>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         STEP 10: REVISÃO FINAL & EXPORTAÇÕES
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="form-section hidden" data-step="10" id="step10">
+        <div class="section-header">
+            <div class="section-number"><span>10</span></div>
+            <div class="section-title-group">
+                <h2>Revisão e Exportação</h2>
+                <p class="section-desc">Revise o protocolo completo e exporte os artefatos para a pesquisa.</p>
+            </div>
+        </div>
+
+        <div class="review-panel" id="reviewPanel">
+            <!-- Will be populated by JS -->
+        </div>
+
+        <div class="guidance tip" style="margin-top:1.5rem">
+            <strong>🚀 Exporte os artefatos:</strong> Gere os arquivos de configuração JSON para os coletores e a planilha de gestão do processo (triagem PRISMA, extração de dados, avaliação de qualidade) prontos para uso.
+        </div>
+
+        <div class="export-grid">
+            <div class="export-card" onclick="exportAllConfigs()">
+                <div class="export-icon">⚙️</div>
+                <h4>Configs dos Coletores</h4>
+                <p>Gera config_*.json para cada base selecionada</p>
+            </div>
+            <div class="export-card" onclick="exportProtocol()">
+                <div class="export-icon">📄</div>
+                <h4>Protocolo (Markdown)</h4>
+                <p>Documento do protocolo formatado PRISMA</p>
+            </div>
+            <div class="export-card" onclick="exportScreeningSheet()">
+                <div class="export-icon">📊</div>
+                <h4>Planilha de Triagem</h4>
+                <p>CSV com colunas de decisão para screening</p>
+            </div>
+            <div class="export-card" onclick="exportExtractionSheet()">
+                <div class="export-icon">📋</div>
+                <h4>Planilha de Extração</h4>
+                <p>CSV com todas as variáveis selecionadas</p>
+            </div>
+            <div class="export-card" onclick="exportQualitySheet()">
+                <div class="export-icon">🏅</div>
+                <h4>Planilha de Qualidade</h4>
+                <p>Formulário de avaliação de risco de viés</p>
+            </div>
+            <div class="export-card" onclick="exportPRISMASheet()">
+                <div class="export-icon">🔀</div>
+                <h4>PRISMA Flow Data</h4>
+                <p>Planilha para preenchimento do fluxograma</p>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="btn btn-secondary" onclick="prevStep(10)">← Anterior</button>
+            <button class="btn btn-success" onclick="exportAllAtOnce()">📦 Exportar Tudo de Uma Vez</button>
+        </div>
+    </section>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MODAL
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal" id="modalContent">
+        <h3 id="modalTitle"></h3>
+        <pre id="modalPre"></pre>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeModalDirect()">Fechar</button>
+            <button class="btn btn-primary" id="modalDownloadBtn" onclick="">⬇ Baixar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   APPLICATION STATE & LOGIC
+   ═══════════════════════════════════════════════════════════════ */
+const TOTAL_STEPS = 10;
+let currentStep = 1;
+
+// ─── Progress Bar ────────────────────────────────────────────
+function initProgress() {
+    const container = document.getElementById('progressSteps');
+    container.innerHTML = '';
+    for (let i = 1; i <= TOTAL_STEPS; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'progress-step' + (i === 1 ? ' active' : '');
+        dot.dataset.step = i;
+        dot.onclick = () => goToStep(i);
+        container.appendChild(dot);
+    }
+    updateProgress();
+}
+
+function updateProgress() {
+    const pct = Math.round(((currentStep - 1) / (TOTAL_STEPS - 1)) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressPercent').textContent = pct + '%';
+    document.getElementById('progressLabel').textContent = `Etapa ${currentStep} de ${TOTAL_STEPS}`;
+    document.querySelectorAll('.progress-step').forEach(dot => {
+        const s = parseInt(dot.dataset.step);
+        dot.classList.toggle('active', s === currentStep);
+        dot.classList.toggle('completed', s < currentStep);
+    });
+}
+
+// ─── Navigation ──────────────────────────────────────────────
+function goToStep(step) {
+    if (step < 1 || step > TOTAL_STEPS) return;
+    // Mark previous as completed
+    const prevSection = document.getElementById('step' + currentStep);
+    if (prevSection) {
+        prevSection.classList.remove('active');
+        prevSection.classList.add('hidden');
+        if (step > currentStep) prevSection.classList.add('completed');
+    }
+    currentStep = step;
+    const nextSection = document.getElementById('step' + currentStep);
+    if (nextSection) {
+        nextSection.classList.remove('hidden');
+        nextSection.classList.add('active');
+        nextSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    updateProgress();
+    if (currentStep === TOTAL_STEPS) buildReview();
+}
+
+function nextStep(from) {
+    const section = document.getElementById('step' + from);
+    if (section) { section.classList.add('completed'); }
+    goToStep(from + 1);
+}
+function prevStep(from) { goToStep(from - 1); }
+
+// ─── UI Controls ─────────────────────────────────────────────
+function selectRadio(el) {
+    const group = el.closest('.radio-group');
+    group.querySelectorAll('.radio-item').forEach(r => r.classList.remove('selected'));
+    el.classList.add('selected');
+    el.querySelector('input[type="radio"]').checked = true;
+}
+
+function toggleCheck(el) {
+    const cb = el.querySelector('input[type="checkbox"]');
+    // Toggle will happen naturally, just update class
+    setTimeout(() => {
+        el.classList.toggle('selected', cb.checked);
+    }, 10);
+}
+
+// ─── Repeater rows ───────────────────────────────────────────
+function removeRepeaterRow(btn) {
+    const row = btn.closest('.repeater-row');
+    const repeater = row.closest('.repeater');
+    if (repeater.querySelectorAll('.repeater-row').length > 1) {
+        row.remove();
+    }
+}
+
+function addRepeaterRow(repeaterId, inputClass, placeholder) {
+    const repeater = document.getElementById(repeaterId);
+    const row = document.createElement('div');
+    row.className = 'repeater-row';
+    row.innerHTML = `<input type="text" placeholder="${placeholder}" class="${inputClass}"><button class="btn-remove" onclick="removeRepeaterRow(this)">×</button>`;
+    repeater.appendChild(row);
+    row.querySelector('input').focus();
+}
+
+function addTeamMember() {
+    const repeater = document.getElementById('repeater_equipe');
+    const row = document.createElement('div');
+    row.className = 'repeater-row';
+    row.innerHTML = `
+        <input type="text" placeholder="Nome do revisor" class="equipe-member">
+        <select class="equipe-role">
+            <option value="Revisor">Revisor</option>
+            <option value="Orientador">Orientador</option>
+            <option value="Co-orientador">Co-orientador</option>
+            <option value="Bibliotecário">Bibliotecário</option>
+            <option value="Estatístico">Estatístico</option>
+        </select>
+        <button class="btn-remove" onclick="removeRepeaterRow(this)">×</button>
+    `;
+    repeater.appendChild(row);
+    row.querySelector('input').focus();
+}
+
+// ─── Tags input ──────────────────────────────────────────────
+function focusTagInput(container) {
+    container.querySelector('input').focus();
+}
+
+function handleTagInput(event, containerId) {
+    if (event.key === 'Enter' || event.key === ',') {
+        event.preventDefault();
+        const input = event.target;
+        const val = input.value.trim().replace(/,$/,'');
+        if (!val) return;
+        const container = document.getElementById(containerId);
+        const tag = document.createElement('span');
+        tag.className = 'tag';
+        tag.innerHTML = `${val} <span class="tag-remove" onclick="this.parentElement.remove(); updateQueryPreview();">×</span>`;
+        tag.dataset.value = val;
+        container.insertBefore(tag, input);
+        input.value = '';
+        updateQueryPreview();
+    }
+}
+
+function getTagValues(containerId) {
+    return Array.from(document.getElementById(containerId).querySelectorAll('.tag'))
+        .map(t => t.dataset.value)
+        .filter(v => v);
+}
+
+// ─── Query preview ───────────────────────────────────────────
+function updateQueryPreview() {
+    const b1 = getTagValues('tags_bloco1');
+    const b2 = getTagValues('tags_bloco2');
+    const b3 = getTagValues('tags_bloco3');
+    const op = document.querySelector('input[name="operador_blocos"]:checked')?.value || 'AND';
+    
+    if (b1.length === 0 && b2.length === 0) {
+        document.getElementById('queryPreviewCode').innerHTML = '<span style="color:var(--text-muted)">Configure os blocos acima para gerar a expressão...</span>';
+        return;
+    }
+    
+    const formatBlock = (terms) => terms.map(t => t.includes(' ') ? `"${t}"` : t).join(' <span class="op">OR</span> ');
+    let parts = [];
+    if (b1.length) parts.push(`(${formatBlock(b1)})`);
+    if (b2.length) parts.push(`(${formatBlock(b2)})`);
+    if (b3.length) parts.push(`(${formatBlock(b3)})`);
+    
+    const html = parts.join(` <span class="op">${op}</span> `);
+    document.getElementById('queryPreviewCode').innerHTML = html;
+}
+
+// ─── Build raw query string ──────────────────────────────────
+function buildQueryString() {
+    const b1 = getTagValues('tags_bloco1');
+    const b2 = getTagValues('tags_bloco2');
+    const b3 = getTagValues('tags_bloco3');
+    const op = document.querySelector('input[name="operador_blocos"]:checked')?.value || 'AND';
+    
+    const fmt = (terms) => terms.map(t => t.includes(' ') ? `"${t}"` : t).join(' OR ');
+    let parts = [];
+    if (b1.length) parts.push(`(${fmt(b1)})`);
+    if (b2.length) parts.push(`(${fmt(b2)})`);
+    if (b3.length) parts.push(`(${fmt(b3)})`);
+    
+    return parts.join(` ${op} `);
+}
+
+// ─── Collect all form data ───────────────────────────────────
+function collectFormData() {
+    const getVal = id => (document.getElementById(id)?.value || '').trim();
+    const getChecked = groupId => Array.from(document.querySelectorAll(`#${groupId} input[type="checkbox"]:checked`)).map(c => c.value);
+    const getRadio = name => document.querySelector(`input[name="${name}"]:checked`)?.value || '';
+    const getRepeater = (id, cls) => Array.from(document.querySelectorAll(`#${id} .${cls}`)).map(i => i.value.trim()).filter(v => v);
+    
+    // Team
+    const team = [];
+    document.querySelectorAll('#repeater_equipe .repeater-row').forEach(row => {
+        const name = row.querySelector('.equipe-member')?.value?.trim();
+        const role = row.querySelector('.equipe-role')?.value;
+        if (name) team.push({ name, role });
+    });
+
+    return {
+        // Step 1
+        titulo: getVal('titulo_revisao'),
+        pesquisador: getVal('pesquisador_principal'),
+        email: getVal('email_pesquisador'),
+        instituicao: getVal('instituicao'),
+        data_protocolo: getVal('data_protocolo'),
+        equipe: team,
+        prospero: getVal('registro_prospero'),
+        // Step 2
+        framework: getRadio('framework'),
+        pico_p: getVal('pico_p'),
+        pico_i: getVal('pico_i'),
+        pico_c: getVal('pico_c'),
+        pico_o: getVal('pico_o'),
+        pergunta: getVal('pergunta_pesquisa'),
+        // Step 3
+        criterios_inclusao: getRepeater('repeater_inclusao', 'criterio-inclusao'),
+        criterios_exclusao: getRepeater('repeater_exclusao', 'criterio-exclusao'),
+        tipos_estudo: getChecked('tipos_estudo'),
+        idiomas: getChecked('idiomas_aceitos'),
+        // Step 4
+        bloco1: getTagValues('tags_bloco1'),
+        bloco2: getTagValues('tags_bloco2'),
+        bloco3: getTagValues('tags_bloco3'),
+        operador_blocos: getRadio('operador_blocos'),
+        query: buildQueryString(),
+        ano_inicio: parseInt(getVal('ano_inicio')) || 2000,
+        ano_fim: parseInt(getVal('ano_fim')) || 2026,
+        scopus_field: getVal('scopus_field'),
+        // Step 5
+        bases_software: getChecked('bases_software'),
+        bases_manuais: getRepeater('repeater_bases_manuais', 'base-manual'),
+        scopus_api_key: getVal('scopus_api_key'),
+        email_api: getVal('email_api'),
+        // Step 6
+        revisores_triagem: getRadio('revisores_triagem'),
+        resolucao_conflitos: getVal('resolucao_conflitos'),
+        software_triagem: getVal('software_triagem'),
+        piloto_tamanho: parseInt(getVal('piloto_tamanho')) || 30,
+        piloto_kappa: getVal('piloto_kappa'),
+        // Step 7
+        variaveis_extracao: getChecked('variaveis_extracao'),
+        variaveis_custom: getRepeater('repeater_variaveis', 'var-custom'),
+        extracao_dupla: getRadio('extracao_dupla'),
+        // Step 8
+        ferramenta_vies: getVal('ferramenta_viés'),
+        classificacao_qual: getRadio('classificacao_qual'),
+        obs_qualidade: getVal('obs_qualidade'),
+        // Step 9
+        tipo_sintese: getChecked('tipo_sintese'),
+        software_analise: getVal('software_analise'),
+        obs_sintese: getVal('obs_sintese'),
+    };
+}
+
+// ─── Review panel ────────────────────────────────────────────
+function buildReview() {
+    const d = collectFormData();
+    const panel = document.getElementById('reviewPanel');
+    
+    const rv = (label, value) => {
+        const isEmpty = !value || value === 'N/A' || (Array.isArray(value) && value.length === 0);
+        const displayVal = Array.isArray(value) ? value.join('; ') : value;
+        return `<div class="review-item"><span class="rl">${label}</span><span class="rv ${isEmpty ? 'empty' : ''}">${isEmpty ? '(não preenchido)' : displayVal}</span></div>`;
+    };
+
+    panel.innerHTML = `
+        <div class="review-section">
+            <h3>📌 Identificação</h3>
+            ${rv('Título', d.titulo)}
+            ${rv('Pesquisador', d.pesquisador)}
+            ${rv('Instituição', d.instituicao)}
+            ${rv('Data', d.data_protocolo)}
+            ${rv('Equipe', d.equipe.map(m => `${m.name} (${m.role})`).join('; '))}
+            ${rv('PROSPERO', d.prospero)}
+        </div>
+        <div class="review-section">
+            <h3>❓ Questão de Pesquisa (${d.framework})</h3>
+            ${rv('P', d.pico_p)}
+            ${rv('I', d.pico_i)}
+            ${rv('C/Co', d.pico_c)}
+            ${rv('O', d.pico_o)}
+            ${rv('Pergunta', d.pergunta)}
+        </div>
+        <div class="review-section">
+            <h3>✅ Elegibilidade</h3>
+            ${rv('Inclusão', d.criterios_inclusao)}
+            ${rv('Exclusão', d.criterios_exclusao)}
+            ${rv('Tipos de estudo', d.tipos_estudo)}
+            ${rv('Idiomas', d.idiomas)}
+        </div>
+        <div class="review-section">
+            <h3>🔍 Estratégia de Busca</h3>
+            ${rv('Expressão', d.query)}
+            ${rv('Recorte temporal', `${d.ano_inicio}–${d.ano_fim}`)}
+            ${rv('Campo Scopus', d.scopus_field)}
+        </div>
+        <div class="review-section">
+            <h3>🗄️ Fontes</h3>
+            ${rv('Bases (software)', d.bases_software)}
+            ${rv('Bases (manuais)', d.bases_manuais)}
+        </div>
+        <div class="review-section">
+            <h3>🔬 Triagem</h3>
+            ${rv('Revisores', d.revisores_triagem)}
+            ${rv('Conflitos', d.resolucao_conflitos)}
+            ${rv('Software', d.software_triagem)}
+            ${rv('Piloto', `${d.piloto_tamanho} estudos, meta κ ${d.piloto_kappa}`)}
+        </div>
+        <div class="review-section">
+            <h3>📊 Extração</h3>
+            ${rv('Variáveis', [...d.variaveis_extracao, ...d.variaveis_custom])}
+            ${rv('Extração dupla', d.extracao_dupla)}
+        </div>
+        <div class="review-section">
+            <h3>🏅 Qualidade</h3>
+            ${rv('Ferramenta', d.ferramenta_vies)}
+            ${rv('Classificação', d.classificacao_qual)}
+            ${rv('Observações', d.obs_qualidade)}
+        </div>
+        <div class="review-section">
+            <h3>📈 Síntese</h3>
+            ${rv('Tipo', d.tipo_sintese)}
+            ${rv('Software', d.software_analise)}
+            ${rv('Análises adicionais', d.obs_sintese)}
+        </div>
+    `;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  EXPORT FUNCTIONS
+// ═══════════════════════════════════════════════════════════════
+
+function showModal(title, content, filename) {
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalPre').textContent = content;
+    const btn = document.getElementById('modalDownloadBtn');
+    btn.onclick = () => downloadFile(filename, content);
+    document.getElementById('modalOverlay').classList.add('visible');
+}
+function closeModal(e) { if (e.target === e.currentTarget) closeModalDirect(); }
+function closeModalDirect() { document.getElementById('modalOverlay').classList.remove('visible'); }
+
+function downloadFile(filename, content, mimeType = 'text/plain') {
+    const blob = new Blob([content], { type: mimeType + ';charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function downloadCSV(filename, headers, rows) {
+    const escape = (val) => {
+        const s = String(val ?? '');
+        if (s.includes(',') || s.includes('"') || s.includes('\n')) {
+            return '"' + s.replace(/"/g, '""') + '"';
+        }
+        return s;
+    };
+    let csv = '\uFEFF'; // BOM for Excel UTF-8
+    csv += headers.map(escape).join(',') + '\n';
+    rows.forEach(row => { csv += row.map(escape).join(',') + '\n'; });
+    downloadFile(filename, csv, 'text/csv');
+}
+
+// ─── Config JSONs ────────────────────────────────────────────
+function generateBDTDConfig(d) {
+    return JSON.stringify({
+        search: { query: d.query, start_year: d.ano_inicio, end_year: d.ano_fim },
+        api: {
+            base_url: "https://bdtd.ibict.br/vufind/api/v1/search",
+            limit: 50, max_retries: 5, backoff_factor: 1.5, politeness_delay_seconds: 1.5,
+            user_agent: `BDTDHarvester/1.0 (Research: ${d.pesquisador}; contact: ${d.email_api || d.email || 'user@mail.com'})`
+        },
+        paths: { output_dir: "data_outputs", csv_name: "bdtd_clean_data.csv", json_name: "bdtd_raw_backup.json", excel_name: "BDTD_Data_Export.xlsx", report_name: "bdtd_summary_report.md", log_name: "bdtd_harvester.log" }
+    }, null, 2);
+}
+function generateScopusConfig(d) {
+    const scopusQuery = `${d.scopus_field}(${d.query})`;
+    return JSON.stringify({
+        search: { query: scopusQuery, start_year: d.ano_inicio, end_year: d.ano_fim },
+        api: {
+            base_url: "https://api.elsevier.com/content/search/scopus",
+            api_key: d.scopus_api_key || "SUA_API_KEY_AQUI",
+            limit: 25, max_retries: 5, backoff_factor: 1.5, politeness_delay_seconds: 1.0,
+            user_agent: `ScopusHarvester/1.0 (contact: ${d.email_api || d.email || 'user@mail.com'})`
+        },
+        paths: { output_dir: "scopus_outputs", csv_name: "scopus_clean_data.csv", json_name: "scopus_raw_backup.json", excel_name: "Scopus_Data_Export.xlsx", report_name: "scopus_summary_report.md", log_name: "scopus_harvester.log" }
+    }, null, 2);
+}
+function generateOpenAlexConfig(d) {
+    return JSON.stringify({
+        search: {
+            query: d.query, start_year: d.ano_inicio, end_year: d.ano_fim,
+            filters: { repository_ids: [], publisher_ids: [], only_open_access: false, source_types: [] }
+        },
+        api: {
+            base_url: "https://api.openalex.org/works",
+            limit: 50, max_retries: 5, backoff_factor: 1.5, politeness_delay_seconds: 1.0,
+            user_agent: `OpenAlexHarvester/1.0 (contact: ${d.email_api || d.email || 'user@mail.com'})`
+        },
+        paths: { output_dir: "openalex_outputs", csv_name: "openalex_clean_data.csv", json_name: "openalex_raw_backup.json", excel_name: "OpenAlex_Data_Export.xlsx", report_name: "openalex_summary_report.md", log_name: "openalex_harvester.log" }
+    }, null, 2);
+}
+function generateSciELOConfig(d) {
+    return JSON.stringify({
+        search: { query: d.query, start_year: d.ano_inicio, end_year: d.ano_fim },
+        api: {
+            base_url: "https://api.openalex.org/works",
+            publisher_id: "P4310312277",
+            limit: 50, max_retries: 5, backoff_factor: 1.5, politeness_delay_seconds: 1.0,
+            user_agent: `SciELOHarvester/1.0 (contact: ${d.email_api || d.email || 'user@mail.com'})`
+        },
+        paths: { output_dir: "scielo_outputs", csv_name: "scielo_clean_data.csv", json_name: "scielo_raw_backup.json", excel_name: "SciELO_Data_Export.xlsx", report_name: "scielo_summary_report.md", log_name: "scielo_harvester.log" }
+    }, null, 2);
+}
+
+function exportAllConfigs() {
+    const d = collectFormData();
+    let allConfigs = '';
+    if (d.bases_software.includes('BDTD')) {
+        allConfigs += '// ═══ config.json (BDTD) ═══\n' + generateBDTDConfig(d) + '\n\n';
+    }
+    if (d.bases_software.includes('Scopus')) {
+        allConfigs += '// ═══ config_scopus.json ═══\n' + generateScopusConfig(d) + '\n\n';
+    }
+    if (d.bases_software.includes('OpenAlex')) {
+        allConfigs += '// ═══ config_openalex.json ═══\n' + generateOpenAlexConfig(d) + '\n\n';
+    }
+    if (d.bases_software.includes('SciELO')) {
+        allConfigs += '// ═══ config_scielo.json ═══\n' + generateSciELOConfig(d) + '\n\n';
+    }
+    showModal('Configurações dos Coletores (JSON)', allConfigs, 'configs_coletores.txt');
+}
+
+// ─── Protocol Markdown ───────────────────────────────────────
+function exportProtocol() {
+    const d = collectFormData();
+    const today = new Date().toLocaleDateString('pt-BR');
+    const md = `# Protocolo de Revisão Sistemática
+
+**Título:** ${d.titulo || '(a definir)'}
+**Pesquisador Principal:** ${d.pesquisador || '(a definir)'}
+**Instituição:** ${d.instituicao || '(a definir)'}
+**Data do Protocolo:** ${d.data_protocolo || today}
+**Registro PROSPERO:** ${d.prospero || 'Não registrado'}
+
+## Equipe de Revisão
+${d.equipe.length ? d.equipe.map(m => `- ${m.name} — ${m.role}`).join('\n') : '- (não definido)'}
+
+---
+
+## 1. Questão de Pesquisa (Framework: ${d.framework})
+
+| Componente | Descrição |
+|---|---|
+| **P** — População | ${d.pico_p || '—'} |
+| **I** — Intervenção/Interesse | ${d.pico_i || '—'} |
+| **C** — Comparação/Contexto | ${d.pico_c || '—'} |
+| **O** — Desfecho (Outcome) | ${d.pico_o || '—'} |
+
+**Pergunta:** ${d.pergunta || '—'}
+
+---
+
+## 2. Critérios de Elegibilidade
+
+### Inclusão
+${d.criterios_inclusao.length ? d.criterios_inclusao.map(c => `- ${c}`).join('\n') : '- (não definido)'}
+
+### Exclusão
+${d.criterios_exclusao.length ? d.criterios_exclusao.map(c => `- ${c}`).join('\n') : '- (não definido)'}
+
+**Tipos de estudo:** ${d.tipos_estudo.join(', ') || 'Todos'}
+**Idiomas:** ${d.idiomas.join(', ') || 'Sem restrição'}
+
+---
+
+## 3. Estratégia de Busca
+
+**Expressão booleana:**
+\`\`\`
+${d.query || '(a definir)'}
+\`\`\`
+
+**Recorte temporal:** ${d.ano_inicio}–${d.ano_fim}
+**Campo Scopus:** ${d.scopus_field}
+
+### Fontes de Dados
+**Bases automatizadas (software):** ${d.bases_software.join(', ') || 'Nenhuma'}
+**Bases manuais:** ${d.bases_manuais.join(', ') || 'Nenhuma'}
+
+---
+
+## 4. Triagem e Seleção
+
+- **Revisores:** ${d.revisores_triagem}
+- **Resolução de conflitos:** ${d.resolucao_conflitos}
+- **Software:** ${d.software_triagem}
+- **Piloto:** ${d.piloto_tamanho} estudos, meta de concordância κ ${d.piloto_kappa}
+
+---
+
+## 5. Extração de Dados
+
+**Variáveis:** ${[...d.variaveis_extracao, ...d.variaveis_custom].join(', ') || '—'}
+**Extração dupla:** ${d.extracao_dupla}
+
+---
+
+## 6. Avaliação da Qualidade
+
+- **Ferramenta:** ${d.ferramenta_vies}
+- **Classificação:** ${d.classificacao_qual}
+${d.obs_qualidade ? `- **Observações:** ${d.obs_qualidade}` : ''}
+
+---
+
+## 7. Síntese dos Resultados
+
+**Tipo de síntese:** ${d.tipo_sintese.join(', ') || '—'}
+**Software de análise:** ${d.software_analise}
+${d.obs_sintese ? `**Análises adicionais:** ${d.obs_sintese}` : ''}
+
+---
+
+## Referências Metodológicas
+
+- Higgins JPT, Thomas J, Chandler J, et al. (eds). *Cochrane Handbook for Systematic Reviews of Interventions* version 6.0. Cochrane, 2019.
+- Campbell M, McKenzie JE, Sowden A, et al. Synthesis without meta-analysis (SWiM) in systematic reviews. *BMJ* 2020;368:l6890.
+- Page MJ, McKenzie JE, Bossuyt PM, et al. The PRISMA 2020 statement. *BMJ* 2021;372:n71.
+
+---
+*Protocolo gerado automaticamente pelo Formulário de Desenho de Pesquisa em ${today}.*
+`;
+    showModal('Protocolo de Revisão Sistemática (Markdown)', md, 'protocolo_revisao_sistematica.md');
+}
+
+// ─── Screening Sheet ─────────────────────────────────────────
+function exportScreeningSheet() {
+    const d = collectFormData();
+    const headers = [
+        'ID_Registro', 'Base_Origem', 'DOI', 'Titulo', 'Autores', 'Ano', 'Periodico',
+        'Resumo', 'Palavras_Chave', 'Idioma',
+        'Revisor_1_Titulo_Resumo', 'Decisao_R1', 'Motivo_Exclusao_R1',
+        'Revisor_2_Titulo_Resumo', 'Decisao_R2', 'Motivo_Exclusao_R2',
+        'Conflito', 'Resolucao_Conflito', 'Decisao_Final_Titulo_Resumo',
+        'Revisor_1_Texto_Completo', 'Decisao_TC_R1', 'Motivo_Exclusao_TC_R1',
+        'Revisor_2_Texto_Completo', 'Decisao_TC_R2', 'Motivo_Exclusao_TC_R2',
+        'Conflito_TC', 'Resolucao_Conflito_TC', 'Decisao_Final_Texto_Completo',
+        'Status_PRISMA', 'Observacoes'
+    ];
+    // Create one example row
+    const exampleRow = [
+        '1', 'OpenAlex', '10.xxxx/xxxxx', '(título do artigo)', '(autores)', '2024', '(periódico)',
+        '(resumo)', '(palavras-chave)', 'pt',
+        d.equipe[0]?.name || 'Revisor 1', 'Incluir/Excluir/Dúvida', '',
+        d.equipe[1]?.name || 'Revisor 2', 'Incluir/Excluir/Dúvida', '',
+        'Sim/Não', '', 'Incluído/Excluído',
+        d.equipe[0]?.name || 'Revisor 1', 'Incluir/Excluir', '',
+        d.equipe[1]?.name || 'Revisor 2', 'Incluir/Excluir', '',
+        'Sim/Não', '', 'Incluído/Excluído',
+        'Identificação/Triagem/Elegibilidade/Incluído', ''
+    ];
+    downloadCSV('planilha_triagem_screening.csv', headers, [exampleRow]);
+}
+
+// ─── Extraction Sheet ────────────────────────────────────────
+function exportExtractionSheet() {
+    const d = collectFormData();
+    const baseHeaders = ['ID_Estudo', 'Autor_Ano', 'DOI', 'Base_Origem'];
+    const varHeaders = [...d.variaveis_extracao, ...d.variaveis_custom].map(v => v.replace(/[\s\/]+/g, '_'));
+    const qualHeaders = ['Qualidade_' + d.ferramenta_vies.replace(/[\s\/()]+/g, '_'), 'Classificacao_Risco'];
+    const metaHeaders = ['Extrator', 'Data_Extracao', 'Verificador', 'Observacoes'];
+    const headers = [...baseHeaders, ...varHeaders, ...qualHeaders, ...metaHeaders];
+    
+    const exampleRow = headers.map((h, i) => {
+        if (i === 0) return '1';
+        if (h === 'Extrator') return d.equipe[0]?.name || '';
+        if (h === 'Data_Extracao') return new Date().toLocaleDateString('pt-BR');
+        return '';
+    });
+    downloadCSV('planilha_extracao_dados.csv', headers, [exampleRow]);
+}
+
+// ─── Quality Assessment Sheet ────────────────────────────────
+function exportQualitySheet() {
+    const d = collectFormData();
+    let domainHeaders = [];
+    const tool = d.ferramenta_vies;
+    if (tool.includes('ROB 2')) {
+        domainHeaders = ['D1_Randomizacao', 'D2_Desvios_Intervencao', 'D3_Dados_Faltantes', 'D4_Medicao_Desfecho', 'D5_Selecao_Resultados'];
+    } else if (tool.includes('ROBINS-I')) {
+        domainHeaders = ['D1_Confundimento', 'D2_Selecao', 'D3_Classificacao', 'D4_Desvios', 'D5_Dados_Faltantes', 'D6_Medicao', 'D7_Selecao_Resultados'];
+    } else if (tool.includes('Newcastle')) {
+        domainHeaders = ['Selecao_1', 'Selecao_2', 'Selecao_3', 'Selecao_4', 'Comparabilidade_1', 'Comparabilidade_2', 'Desfecho_1', 'Desfecho_2', 'Desfecho_3'];
+    } else if (tool.includes('JBI')) {
+        domainHeaders = ['Criterio_1', 'Criterio_2', 'Criterio_3', 'Criterio_4', 'Criterio_5', 'Criterio_6', 'Criterio_7', 'Criterio_8'];
+    } else {
+        domainHeaders = ['Dominio_1', 'Dominio_2', 'Dominio_3', 'Dominio_4', 'Dominio_5'];
+    }
+    
+    const headers = ['ID_Estudo', 'Autor_Ano', 'Ferramenta', ...domainHeaders, 'Julgamento_Global', 'Classificacao', 'Avaliador', 'Observacoes'];
+    const exampleRow = ['1', '', tool, ...domainHeaders.map(() => d.classificacao_qual.includes('numérica') ? '0-10' : 'Alto/Moderado/Baixo'), 
+        d.classificacao_qual.includes('numérica') ? '0-10' : 'Alto/Moderado/Baixo', 
+        d.classificacao_qual.includes('A/B/C') ? 'A/B/C' : (d.classificacao_qual.includes('numérica') ? '0-10' : 'Alto/Moderado/Baixo'),
+        d.equipe[0]?.name || '', ''];
+    downloadCSV('planilha_avaliacao_qualidade.csv', headers, [exampleRow]);
+}
+
+// ─── PRISMA Flow Sheet ──────────────────────────────────────
+function exportPRISMASheet() {
+    const d = collectFormData();
+    const allBases = [...d.bases_software, ...d.bases_manuais].filter(b => b);
+    
+    const headers = ['Etapa_PRISMA', 'Descrição', 'N'];
+    const rows = [];
+    
+    // Identification
+    allBases.forEach(base => {
+        rows.push(['Identificação', `Registros identificados em ${base}`, '']);
+    });
+    rows.push(['Identificação', 'Total de registros identificados (todas as bases)', '']);
+    rows.push(['Identificação', 'Registros removidos antes da triagem (duplicatas)', '']);
+    rows.push(['Identificação', 'Registros removidos por automação (marcação automática como inelegíveis)', '']);
+    rows.push(['Identificação', 'Registros removidos por outros motivos', '']);
+    
+    // Screening
+    rows.push(['Triagem', 'Registros triados (título e resumo)', '']);
+    rows.push(['Triagem', 'Registros excluídos na triagem por título/resumo', '']);
+    
+    // Eligibility
+    rows.push(['Elegibilidade', 'Relatórios buscados para avaliação (texto completo)', '']);
+    rows.push(['Elegibilidade', 'Relatórios não recuperados', '']);
+    rows.push(['Elegibilidade', 'Relatórios avaliados para elegibilidade', '']);
+    rows.push(['Elegibilidade', 'Relatórios excluídos — motivo 1', '']);
+    rows.push(['Elegibilidade', 'Relatórios excluídos — motivo 2', '']);
+    rows.push(['Elegibilidade', 'Relatórios excluídos — motivo 3', '']);
+    rows.push(['Elegibilidade', 'Relatórios excluídos — outros motivos', '']);
+    
+    // Included
+    rows.push(['Incluídos', 'Estudos incluídos na revisão', '']);
+    rows.push(['Incluídos', 'Relatórios de estudos incluídos', '']);
+    if (d.tipo_sintese.includes('Meta-análise')) {
+        rows.push(['Incluídos', 'Estudos incluídos na meta-análise', '']);
+    }
+    
+    downloadCSV('prisma_flow_data.csv', headers, rows);
+}
+
+// ─── Export All ──────────────────────────────────────────────
+function exportAllAtOnce() {
+    const d = collectFormData();
+    
+    // 1. Download configs individually
+    if (d.bases_software.includes('BDTD')) downloadFile('config.json', generateBDTDConfig(d), 'application/json');
+    setTimeout(() => {
+        if (d.bases_software.includes('Scopus')) downloadFile('config_scopus.json', generateScopusConfig(d), 'application/json');
+    }, 200);
+    setTimeout(() => {
+        if (d.bases_software.includes('OpenAlex')) downloadFile('config_openalex.json', generateOpenAlexConfig(d), 'application/json');
+    }, 400);
+    setTimeout(() => {
+        if (d.bases_software.includes('SciELO')) downloadFile('config_scielo.json', generateSciELOConfig(d), 'application/json');
+    }, 600);
+    
+    // 2. Protocol
+    setTimeout(() => { exportProtocol(); closeModalDirect(); }, 800);
+    
+    // 3. Sheets
+    setTimeout(() => exportScreeningSheet(), 1000);
+    setTimeout(() => exportExtractionSheet(), 1200);
+    setTimeout(() => exportQualitySheet(), 1400);
+    setTimeout(() => exportPRISMASheet(), 1600);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+    initProgress();
+    
+    // Attach tag input observers for query preview update
+    ['tags_bloco1', 'tags_bloco2', 'tags_bloco3'].forEach(id => {
+        const observer = new MutationObserver(updateQueryPreview);
+        observer.observe(document.getElementById(id), { childList: true });
+    });
+});
+</script>
+
+</body>
+</html>

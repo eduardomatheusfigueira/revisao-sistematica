@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.venv
+venv/
+ENV/
+env/
+
+# Logs
+*.log
+scopus_harvester.log
+bdtd_harvester.log
+openalex_harvester.log
+scielo_harvester.log
+
+# Data outputs (ignore actual run outputs to keep repo clean)
+data_outputs/
+openalex_outputs/
+scielo_outputs/
+scopus_outputs/
+
+# Ignore backups and generated reports if they are run-specific
+*_raw_backup.json
+*_clean_data.csv
+*_summary_report.md
+
+# Excel temp files
+~$*.xlsx
+
+# Specific large PDFs or reference books if necessary (optional)
+Material de apoio/*Packt Publishing*.pdf
+Material de apoio/*O'Reilly Media*.pdf
+Material de apoio/*cochrane-handbook*.pdf
+

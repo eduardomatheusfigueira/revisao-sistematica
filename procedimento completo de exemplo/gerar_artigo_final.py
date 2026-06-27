@@ -21,6 +21,7 @@ Uso:
 
 import os
 import sys
+import json
 import openpyxl
 from collections import Counter
 from datetime import datetime
@@ -226,15 +227,24 @@ def main():
     dist_periodico = Counter(r["periodico"] for r in records if r["periodico"])
 
     # PRISMA fallback numbers
-    n_brutos = prisma.get("Registros identificados nas bases", 725)
-    n_duplicatas = prisma.get("Duplicatas removidas", 28)
-    n_pre_triagem = prisma.get("Registros pré-triagem automatizada excluídos", 165)
-    n_triagem_tr = prisma.get("Registros triados (Título / Resumo)", 463)
-    n_excl_tr = prisma.get("Excluídos na triagem T/R", 23)
-    n_texto_completo = prisma.get("Artigos avaliados em texto completo", 440)
-    n_nao_recuperados = prisma.get("Artigos não recuperados", 5)
-    n_excl_tc = prisma.get("Excluídos após leitura do texto completo", 327)
-    n_incluidos = prisma.get("Estudos incluídos na síntese", n_total)
+    summary = {}
+    if os.path.exists("pipeline_summary.json"):
+        try:
+            with open("pipeline_summary.json", encoding="utf-8") as sf:
+                summary = json.load(sf)
+        except Exception:
+            pass
+
+    n_brutos = summary.get("total_identified", prisma.get("Registros identificados nas bases de dados", 725))
+    n_duplicatas = summary.get("duplicates_removed", prisma.get("Duplicatas removidas", 203))
+    # Excluídos na pré-triagem / T/R
+    n_pre_triagem = summary.get("excluded_tr", prisma.get("Excluídos na triagem T/R (automatizada)", 46))
+    n_triagem_tr = summary.get("included_tr", prisma.get("Registros incluídos na triagem T/R", 476))
+    n_excl_tr = summary.get("excluded_tr", prisma.get("Excluídos na triagem T/R (automatizada)", 46))
+    n_texto_completo = n_triagem_tr
+    n_nao_recuperados = summary.get("not_retrieved", prisma.get("PDFs não recuperados (sem acesso aberto)", 303))
+    n_excl_tc = summary.get("excluded_tc", prisma.get("Excluídos após leitura do texto completo", 4))
+    n_incluidos = summary.get("included_final", prisma.get("Estudos incluídos na síntese final", n_total))
 
     # ── Gerar documento ──
     print("[3/4] Gerando manuscrito DOCX...")

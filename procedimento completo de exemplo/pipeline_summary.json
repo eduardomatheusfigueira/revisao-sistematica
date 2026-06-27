@@ -1,0 +1,11 @@
+{
+  "total_identified": 725,
+  "duplicates_removed": 203,
+  "included_tr": 476,
+  "excluded_tr": 46,
+  "not_retrieved": 303,
+  "excluded_tc": 4,
+  "included_final": 189,
+  "pdfs_downloaded": 193,
+  "elapsed_minutes": 20.8
+}

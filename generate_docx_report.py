@@ -190,30 +190,45 @@ def main():
         "A integração entre o planejamento em Excel e o motor de coleta em Python é realizada de forma automatizada por meio do script de exportação (exportar_configs_do_excel.py). O script analisa sintaticamente a planilha Excel, localizando dinamicamente as expressões de busca montadas, os limites temporais, o e-mail cadastrado e as credenciais de API. Em seguida, gera de forma limpa os arquivos JSON de configuração (config.json, config_scopus.json, config_openalex.json e config_scielo.json) que alimentam os harvesters, eliminando a necessidade de edição manual de código ou JSONs pelo pesquisador."
     )
     
-    # --- 9. Como Operar o Sistema Localmente ---
-    add_heading_styled(doc, "9. Como Operar o Sistema Localmente", 1)
+    # --- 9. Pipeline de Consolidação, Deduplicação e Análise Estatística ---
+    add_heading_styled(doc, "9. Pipeline de Consolidação, Deduplicação e Análise Estatística", 1)
+    
+    add_body_paragraph(doc,
+        "A fase de execução pós-coleta é sustentada por três ferramentas automatizadas que operacionalizam a triagem, extração de dados e a síntese final. O script de consolidação (consolidar_triagem.py) lê os arquivos CSV de saída de todos os coletores e unifica os registros em um único formato tabular. Em seguida, executa uma deduplicação em duas fases: primeiro, por correspondência exata do DOI normalizado; segundo, por similaridade difusa baseada no algoritmo SequenceMatcher (com limite de aceitação de 90%) nos títulos para registros que não contêm o DOI. O script também realiza uma pré-triagem automática eliminando trabalhos fora do recorte temporal ou em idiomas não elegíveis (permitindo por padrão inglês, português e espanhol), popula a aba 'Planilha Triagem' do formulário Excel e atualiza a aba 'PRISMA Flow' com os números do fluxo inicial."
+    )
+    
+    add_body_paragraph(doc,
+        "O processo de seleção final e sistematização das evidências é realizado pelo script de simulação e triagem (executar_triagem_e_extracao.py). Esta ferramenta simula decisões em dupla independente de revisão (Revisor A e Revisor B) tanto para a triagem por título e resumo (T/R) quanto para a triagem por texto completo (TC), preenchendo as justificativas e calculando os conflitos metodológicos diretamente na planilha Excel. Para os estudos aprovados, o script extrai automaticamente metadados estruturados (autor, ano, base, DOI, título, periódico, resumo, objetivos, desenho do estudo, tamanho da amostra, métodos estatísticos/algoritmos causais, limitações e dados geográficos) e os escreve na 'Planilha Extração', enquanto avalia os riscos de viés (ROB 2/ROBINS-I) na 'Planilha Qualidade', atualizando por fim os campos finais do fluxograma PRISMA."
+    )
+    
+    add_body_paragraph(doc,
+        "Por fim, o script de análise e síntese (gerar_sintese_final.py) processa os dados finais extraídos no Excel para realizar estatísticas descritivas automáticas do levantamento bibliométrico. A ferramenta compila a distribuição temporal da literatura, a tipologia dos desenhos de estudo, a frequência de uso de métodos de descoberta e inferência causal, os níveis de risco de viés avaliados, as limitações metodológicas reportadas e a distribuição geográfica das publicações. Ao término da análise, o script consolida os dados estruturados em tabelas formatadas em Markdown, gerando o relatório final completo de síntese de evidências (relatorio_sintese_final.md) para documentar as conclusões da revisão."
+    )
+    
+    # --- 10. Como Operar o Sistema Localmente ---
+    add_heading_styled(doc, "10. Como Operar o Sistema Localmente", 1)
     
     add_body_paragraph(doc,
         "A operação da suite de coletores foi otimizada para ser realizada em poucos passos utilizando a planilha Excel como fonte única de verdade. O pesquisador deve preencher os parâmetros do protocolo de pesquisa diretamente no Formulario_Desenho_Pesquisa_RSL.xlsx e salvar o arquivo. Em seguida, deve executar o script de exportação (exportar_configs_do_excel.py) no console para gravar as configurações. Com os arquivos de configuração gerados automaticamente, a coleta é disparada com um duplo clique no arquivo inicializador rápido correspondente (ex: run_scopus.bat ou run_openalex.bat) presente no diretório."
     )
     
     add_body_paragraph(doc,
-        "O terminal exibirá em tempo real o andamento da paginação da busca, o status da coleta e as etapas de enriquecimento de resumos. Ao término do processamento, as pastas específicas de saída (ex: scielo_outputs, scopus_outputs e openalex_outputs) serão criadas e populadas no mesmo diretório. As planilhas geradas possuem recursos de formatação automática que ajustam a largura das colunas e habilitam a quebra de texto nas células dos resumos. Recomenda-se abrir diretamente o arquivo de relatório Markdown gerado para obter uma visão geral das publicações."
+        "O terminal exibirá em tempo real o andamento da paginação da busca, o status da coleta e as etapas de enriquecimento de resumos. Ao término do processamento, as pastas específicas de saída (ex: scielo_outputs, scopus_outputs e openalex_outputs) serão criadas e populadas no mesmo diretório. Em seguida, o pipeline de consolidação, triagem e síntese pode ser acionado sequencialmente (consolidar_triagem.py, executar_triagem_e_extracao.py e gerar_sintese_final.py) para gerar as planilhas consolidadas e o relatório de síntese narrativa. As planilhas geradas possuem recursos de formatação automática que ajustam a largura das colunas e habilitam a quebra de texto nas células."
     )
     
-    # --- 10. Conclusão ---
-    add_heading_styled(doc, "10. Conclusão", 1)
+    # --- 11. Conclusão ---
+    add_heading_styled(doc, "11. Conclusão", 1)
     
     add_body_paragraph(doc,
-        "O desenvolvimento da suite de coletores científicos integrada ao desenho de pesquisa em Excel resolveu os gargalos críticos enfrentados na condução de revisões sistemáticas do projeto de pesquisa atual. A união entre o planejamento metodológico estruturado em Excel, o motor de enriquecimento híbrido de dados em Python e as planilhas de gestão operacionais do protocolo proveu um fluxo de trabalho extremamente eficiente e reprodutível. A automação das configurações reduziu a barreira técnica para os pesquisadores, eliminando erros humanos de parametrização."
+        "O desenvolvimento da suite de coletores científicos integrada ao desenho de pesquisa em Excel resolveu os gargalos críticos enfrentados na condução de revisões sistemáticas do projeto de pesquisa atual. A união entre o planejamento metodológico estruturado em Excel, o motor de enriquecimento híbrido de dados em Python, os scripts de deduplicação e triagem automatizados e as planilhas de gestão operacionais do protocolo proveu um fluxo de trabalho extremamente eficiente e reprodutível. A automação das configurações reduziu a barreira técnica para os pesquisadores, eliminando erros humanos de parametrização."
     )
     
     add_body_paragraph(doc,
         "Por fim, a padronização das saídas estruturadas em CSV, Excel e Markdown agilizou o processo de importação e triagem bibliográfica da literatura recuperada. Os coletores garantem a reprodutibilidade metodológica do levantamento bibliográfico, requisito essencial para a validação das revisões sistemáticas em periódicos de alto impacto científico. As ferramentas estão prontas para apoiar novos projetos e expressões de busca, automatizando de forma confiável o acesso à ciência mundial."
     )
     
-    # --- 11. Referências Bibliográficas ---
-    add_heading_styled(doc, "11. Referências Bibliográficas", 1)
+    # --- 12. Referências Bibliográficas ---
+    add_heading_styled(doc, "12. Referências Bibliográficas", 1)
     
     add_body_paragraph(doc,
         "CHAPAGAIN, Anish. Hands-On Web Scraping with Python: Extract quality data from the web using effective Python techniques. Birmingham: Packt Publishing, 2023. Este livro serviu de base conceitual para o desenvolvimento dos mecanismos de bypass de CDN e estruturação das requisições com headers realistas de navegadores comerciais, permitindo contornar firewalls de segurança como o Bunny Shield da SciELO de forma ética e estável durante a varredura."
